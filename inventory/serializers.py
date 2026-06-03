@@ -24,3 +24,8 @@ class ProductSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at']
 
 
+class StockSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Stock
+        fields=['id','warehouse','product','quantity','created_at']
+        read_only_fields = ['id', 'created_at']
