@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # Register your framework and custom app here:
     'rest_framework',
     'inventory',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
