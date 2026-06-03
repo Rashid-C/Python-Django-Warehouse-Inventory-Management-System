@@ -31,3 +31,15 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.sku})"
+    
+
+
+class Stock(models.Model):
+    warehouse=models.ForeignKey(Warehouse,on_delete=models.CASCADE, related_name='stocks')
+    product=models.ForeignKey(Product,on_delete=models.CASCADE, related_name="stocks")
+    quantity=models.PositiveIntegerField(default=0)
+    updated_at=models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return f"{self.product.title} -Qty: {self.quantity} at {self.warehouse.name}"
