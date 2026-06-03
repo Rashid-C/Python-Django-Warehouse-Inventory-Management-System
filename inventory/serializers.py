@@ -12,11 +12,16 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class WarehouseSerializer(serializers.ModelSerializer):
+    # Allows entering raw company ID integers on POST requests
+    company_id = serializers.PrimaryKeyRelatedField(
+        queryset=Company.objects.all(), source='company', write_only=True
+    )
+
     class Meta:
-        model=Warehouse
-        fields=['id','company','name','location_address','created_at']
+        model = Warehouse
+        fields = ['id', 'company', 'company_id', 'name', 'location_address', 'created_at']
         read_only_fields = ['id', 'created_at']
-        depth=1
+        depth = 1
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
