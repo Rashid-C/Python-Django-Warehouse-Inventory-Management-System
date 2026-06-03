@@ -40,6 +40,14 @@ class Stock(models.Model):
     quantity=models.PositiveIntegerField(default=0)
     updated_at=models.DateTimeField(auto_now=True)
 
+class Meta:
 
+    constraints=[
+
+        models.UniqueConstraint(fields=["warehouse","product"], name='unique_warehouse_product_stock')
+
+    ]
+
+    
     def __str__(self):
         return f"{self.product.title} -Qty: {self.quantity} at {self.warehouse.name}"
