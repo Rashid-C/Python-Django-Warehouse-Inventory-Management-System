@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import Company
 from .models import Warehouse
+from .models import Product
+from .models import Stock
 
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,4 +16,11 @@ class WarehouseSerializer(serializers.ModelSerializer):
         model=Warehouse
         fields=['id','company','name','location_address','created_at']
         read_only_fields = ['id', 'created_at']
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'company', 'title', 'sku', 'price', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
 
