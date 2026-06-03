@@ -38,8 +38,16 @@ class StockSerializer(serializers.ModelSerializer):
         queryset=Product.objects.all(), source='product', write_only=True
     )
 
+
+
     class Meta:
         model = Stock
         fields = ['id', 'warehouse', 'product', 'warehouse_id', 'product_id', 'quantity', 'updated_at']
         read_only_fields = ['id', 'updated_at']
         depth = 1
+
+    
+    def validate_quantity(self,value):
+        if value <0:
+            raise serializers.ValidationError("Qty can't be negative.")
+        return value
