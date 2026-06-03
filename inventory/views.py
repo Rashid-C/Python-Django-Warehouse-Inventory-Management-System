@@ -3,8 +3,8 @@ from .models import Company, Warehouse, Product, Stock
 from .serializers import CompanySerializer, WarehouseSerializer, ProductSerializer, StockSerializer
 
 class CompanyViewSet(viewsets.ModelViewSet):
-    queryset=Company.objects.all()
-    serializer_class=CompanySerializer
+    queryset=Company.objects.all()  #collect All companies data from DB
+    serializer_class=CompanySerializer  #Tells Django which translator to use to format that data into clean JSON.
 
 
 class WarehouseViewSet(viewsets.ModelViewSet):
