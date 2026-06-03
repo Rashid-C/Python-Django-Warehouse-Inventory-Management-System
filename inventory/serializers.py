@@ -26,7 +26,15 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class StockSerializer(serializers.ModelSerializer):
+    warehouse_id = serializers.PrimaryKeyRelatedField(
+        queryset=Warehouse.objects.all(), source='warehouse', write_only=True
+    )
+    product_id = serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.all(), source='product', write_only=True
+    )
+
     class Meta:
-        model=Stock
-        fields=['id','warehouse','product','quantity','created_at']
-        read_only_fields = ['id', 'created_at']
+        model = Stock
+        fields = ['id', 'warehouse', 'product', 'warehouse_id', 'product_id', 'quantity', 'updated_at']
+        read_only_fields = ['id', 'updated_at']
+        depth = 1
