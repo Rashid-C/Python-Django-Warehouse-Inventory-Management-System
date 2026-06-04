@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Company,Warehouse,Product,Stock,InventoryTask,Sale,SaleItem
+from .models import Company,Warehouse,Product,Stock,InventoryTask,Sale,SaleItem,Customer
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -109,3 +109,9 @@ class SaleItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = SaleItem
         fields = ['id', 'sale', 'product', 'warehouse', 'quantity', 'price_at_sale']
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = '__all__'

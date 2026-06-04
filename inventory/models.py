@@ -87,9 +87,12 @@ class Sale(models.Model):
     
     invoice_number = models.CharField(max_length=50, unique=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
+
+    customer = models.ForeignKey('Customer', on_delete=models.SET_NULL, null=True, blank=True)
+    
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     created_at = models.DateTimeField(auto_now_add=True)
-
+    
     def __str__(self):
         return f"Invoice {self.invoice_number} ({self.status})"
 
@@ -103,3 +106,13 @@ class SaleItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity}x {self.product.title} from {self.warehouse.name}"
+    
+
+class Customer(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=20)
+    company = models.ForeignKey('Company', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
