@@ -75,15 +75,37 @@ class InventoryTaskSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at']
         depth = 1
 
+class SaleItemNestedSerializer(serializers.ModelSerializer):
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    warehouse = serializers.PrimaryKeyRelatedField(queryset=Warehouse.objects.all())
 
-class SaleItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SaleItem 
+        model = SaleItem
         fields = ['id', 'product', 'warehouse', 'quantity', 'price_at_sale']
 
+
 class SaleSerializer(serializers.ModelSerializer):
-    items = SaleItemSerializer(many=True, read_only=True)
+    items = SaleItemNestedSerializer(many=True)
 
     class Meta:  
         model = Sale  
         fields = ['id', 'invoice_number', 'company', 'status', 'created_at', 'items']
+
+    def create(self, validated_data):
+        items_data = validated_data.pop('items')
+        sale = Sale.objects.create(**validated_data)
+        
+        for item_data in items_data:
+            SaleItem.objects.create(sale=sale, **item_data)
+            
+        return sale
+    
+
+class SaleItemSerializer(serializers.ModelSerializer):
+    sale = serializers.PrimaryKeyRelatedField(queryset=Sale.objects.all())
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    warehouse = serializers.PrimaryKeyRelatedField(queryset=Warehouse.objects.all())
+
+    class Meta:
+        model = SaleItem
+        fields = ['id', 'sale', 'product', 'warehouse', 'quantity', 'price_at_sale']

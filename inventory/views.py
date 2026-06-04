@@ -22,7 +22,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
 
 
 class WarehouseViewSet(viewsets.ModelViewSet):
-    queryset = Warehouse.objects.all()
+    queryset = Warehouse.objects.all()  
     serializer_class = WarehouseSerializer
 
 

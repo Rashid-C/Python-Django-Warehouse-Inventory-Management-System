@@ -1,7 +1,7 @@
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import InventoryTask, Stock, Sale
+from .models import InventoryTask, Stock, Sale,SaleItem
 
 @receiver(post_save, sender=InventoryTask)
 def update_stock_on_task_completion(sender, instance, created, **kwargs):
@@ -57,3 +57,36 @@ def handle_sale_completion(sender, instance, created, **kwargs):
                     product=item.product,
                     quantity=-item.quantity
                 )
+
+
+
+@receiver(post_save, sender=Sale)
+def update_stock_on_sale(sender, instance, created, **kwargs):
+    if instance.status == "COMPLETED":
+        for item in instance.items.all():
+            try:
+                stock_record = Stock.objects.get(
+                    warehouse_id=item.warehouse_id, 
+                    product_id=item.product_id
+                )
+                stock_record.quantity -= item.quantity
+                stock_record.save()
+            except Stock.DoesNotExist:
+                pass
+
+
+@receiver(post_save, sender=SaleItem)
+def update_stock_on_item_save(sender, instance, created, **kwargs):
+   
+    if instance.sale and instance.sale.status and instance.sale.status.upper() == "COMPLETED":
+        try:
+            stock_record = Stock.objects.get(
+                warehouse_id=instance.warehouse_id,
+                product_id=instance.product_id
+            )
+            
+            stock_record.quantity -= instance.quantity
+            stock_record.save()
+            
+        except Stock.DoesNotExist:
+            pass
