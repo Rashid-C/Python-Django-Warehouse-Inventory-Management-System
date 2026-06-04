@@ -38,11 +38,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Register your framework and custom app here:
     'rest_framework',
     'inventory',
     'django_filters',
+    'drf_spectacular',
 ]
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Warehouse Inventory Management API',
+    'DESCRIPTION': 'Advanced API engine tracking companies, warehouses, stock, and distribution tasks.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -125,7 +133,14 @@ LOGIN_REDIRECT_URL = '/api/'
 
 
 
+
+
+
 REST_FRAMEWORK = {
+  
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
+   
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
@@ -133,6 +148,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
+
 
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10

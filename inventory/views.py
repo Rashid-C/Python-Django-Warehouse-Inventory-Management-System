@@ -1,8 +1,12 @@
 
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
-
+from rest_framework.permissions import IsAuthenticated
 from .models import Company, Warehouse, Product, Stock, InventoryTask
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from .serializers import (
     CompanySerializer, 
@@ -30,6 +34,8 @@ class ProductViewSet(viewsets.ModelViewSet):
 class StockViewSet(viewsets.ModelViewSet):
     queryset = Stock.objects.all()
     serializer_class = StockSerializer
+
+    permission_classes=[IsAuthenticated]
     
    
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -47,3 +53,21 @@ class InventoryTaskViewSet(viewsets.ModelViewSet):
     filterset_fields = ['status', 'task_type', 'product']
     search_fields = ['product__title']
     ordering_fields = ['created_at', 'quantity']
+
+    @action(detail=True, methods=['post'])
+    def complete(self, request, pk=None):
+        task = self.get_object()
+        
+        if task.status == 'COMPLETED':
+            return Response(
+                {'error': 'This task is already completed!'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        task.status = 'COMPLETED'
+        task.save()  
+        
+        return Response(
+            {'status': f'Task #{task.id} marked as completed, stock levels updated successfully.'},
+            status=status.HTTP_200_OK
+        )
