@@ -2,7 +2,7 @@
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
-from .models import Company, Warehouse, Product, Stock, InventoryTask
+from .models import Company, Warehouse, Product, Stock, InventoryTask,Sale,SaleItem
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -13,7 +13,7 @@ from .serializers import (
     WarehouseSerializer, 
     ProductSerializer, 
     StockSerializer, 
-    InventoryTaskSerializer
+    InventoryTaskSerializer,SaleSerializer, SaleItemSerializer
 )
 
 class CompanyViewSet(viewsets.ModelViewSet):
@@ -71,3 +71,15 @@ class InventoryTaskViewSet(viewsets.ModelViewSet):
             {'status': f'Task #{task.id} marked as completed, stock levels updated successfully.'},
             status=status.HTTP_200_OK
         )
+    
+class SaleViewSet(viewsets.ModelViewSet):
+    queryset=Sale.objects.all()
+    serializer_class=SaleSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['status', 'company']
+    search_fields = ['invoice_number']
+
+
+class SaleItemViewSet(viewsets.ModelViewSet):
+    queryset = SaleItem.objects.all()
+    serializer_class = SaleItemSerializer

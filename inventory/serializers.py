@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Company,Warehouse,Product,Stock,InventoryTask
+from .models import Company,Warehouse,Product,Stock,InventoryTask,Sale,SaleItem
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -74,3 +74,16 @@ class InventoryTaskSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'created_at']
         depth = 1
+
+
+class SaleItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=SaleItem
+        fields = ['id', 'product', 'warehouse', 'quantity', 'price_at_sale']
+
+
+class SaleSerializer(serializers.ModelSerializer):
+    items = SaleItemSerializer(many=True, read_only=True)
+    class Meta:
+        model:Sale
+        fields = ['id', 'invoice_number', 'company', 'status', 'created_at', 'items']
