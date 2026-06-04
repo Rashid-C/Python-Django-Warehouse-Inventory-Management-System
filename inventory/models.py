@@ -78,3 +78,28 @@ class InventoryTask(models.Model):
     def __str__(self):
         return f"{self.task_type} - {self.product.title} ({self.quantity})"
     
+class Sale(models.Model):
+    STATUS_CHOICE=[
+        ('PENDING','Pending Payment'),
+        ('COMPLETED','Completed/Dispached'),
+        ('CANCELLED','Cancelled'),
+    ]
+
+    invoice_number=models.CharField(max_length=50,unique=True)
+    company=models.ForeignKey(Company, on_delete=models.CASCADE)
+    status=models.CharField(max_length=20, choices=STATUS_CHOICE, default='PENDING')
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.invoice_number} ({self.status})"
+    
+class SaleItem(models.Model):
+    sale=models.ForeignKey(Sale, on_delete=models.CASCADE, related_name='items')
+    product=models.ForeignKey(Product, on_delete=models.CASCADE)
+    warehouse=models.ForeignKey(Warehouse, on_delete=models.CASCADE)
+    quantity=models.IntegerField()
+    price_at_sale=models.DecimalField(max_digits=10, decimal_places=2)
+
+
+    def __str__(self):
+        return f"{self.quantity}x {self.product.title} from {self.warehouse.name}"
