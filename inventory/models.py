@@ -51,3 +51,30 @@ class Meta:
     
     def __str__(self):
         return f"{self.product.title} -Qty: {self.quantity} at {self.warehouse.name}"
+    
+class InventoryTask(models.Model):
+    TASK_TYPES = [
+        ('INBOUND', 'Receiving New Stock'),
+        ('OUTBOUND', 'Shipping to Customer'),
+        ('TRANSFER', 'Moving between Warehouses'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('PENDING', 'Not Started'),
+        ('IN_PROGRESS', 'Worker is doing it'),
+        ('COMPLETED', 'Finished'),
+    ]
+
+    task_type = models.CharField(max_length=20, choices=TASK_TYPES)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    
+    from_warehouse = models.ForeignKey(Warehouse, null=True, blank=True, related_name='outgoing_tasks', on_delete=models.SET_NULL)
+    to_warehouse = models.ForeignKey(Warehouse, null=True, blank=True, related_name='incoming_tasks', on_delete=models.SET_NULL)
+    
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # Clean look for the admin panel
+    def __str__(self):
+        return f"{self.task_type} - {self.product.title} ({self.quantity})"
