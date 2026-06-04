@@ -10,7 +10,6 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class WarehouseSerializer(serializers.ModelSerializer):
-    # Allows entering raw company ID integers on POST requests
     company_id = serializers.PrimaryKeyRelatedField(
         queryset=Company.objects.all(), source='company', write_only=True
     )
@@ -23,7 +22,6 @@ class WarehouseSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    # Allows entering raw company ID integers on POST requests
     company_id = serializers.PrimaryKeyRelatedField(
         queryset=Company.objects.all(), source='company', write_only=True
     )
@@ -36,7 +34,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class StockSerializer(serializers.ModelSerializer):
-    # Allows entering raw integers on POST requests
     warehouse_id = serializers.PrimaryKeyRelatedField(
         queryset=Warehouse.objects.all(), source='warehouse', write_only=True
     )
@@ -53,11 +50,11 @@ class StockSerializer(serializers.ModelSerializer):
     def validate_quantity(self, value):
         if value < 0:
             raise serializers.ValidationError("Qty can't be negative.")
-        return value  # 👈 Fixed: Removed trailing comma tuple bug!
+        return value  
 
 
 class InventoryTaskSerializer(serializers.ModelSerializer):
-    # Flexible field definitions to let the front-end send IDs directly on POST/PATCH requests
+   
     product_id = serializers.PrimaryKeyRelatedField(
         queryset=Product.objects.all(), source='product', write_only=True
     )
