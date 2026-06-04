@@ -2,7 +2,8 @@
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
-from .models import Company, Warehouse, Product, Stock, InventoryTask,Sale,SaleItem,Customer
+from .models import ( Company, Warehouse, Product, Stock, 
+InventoryTask,Sale,SaleItem,Customer,Payment )
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -13,7 +14,8 @@ from .serializers import (
     WarehouseSerializer, 
     ProductSerializer, 
     StockSerializer, 
-    InventoryTaskSerializer,SaleSerializer, SaleItemSerializer,CustomerSerializer
+    InventoryTaskSerializer,SaleSerializer, SaleItemSerializer,CustomerSerializer,
+    PaymentSerializer
     
 )
 
@@ -89,3 +91,7 @@ class SaleItemViewSet(viewsets.ModelViewSet):
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset=Customer.objects.all()
     serializer_class=CustomerSerializer
+
+class PaymentViewSet(viewsets.ModelViewSet):
+    queryset=Payment.objects.all()
+    serializer_class=PaymentSerializer
