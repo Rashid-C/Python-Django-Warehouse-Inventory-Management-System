@@ -5,7 +5,8 @@ Product,
 Stock,
 InventoryTask,
 Sale,SaleItem,
-Customer,Payment
+Customer,Payment,
+Currency
 )
 
 
@@ -146,3 +147,8 @@ class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = '__all__'
+
+class CurrencySerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Currency
+        fields=['id','code','name']
