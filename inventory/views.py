@@ -3,7 +3,7 @@ from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from .models import ( Company, Warehouse, Product, Stock, 
-InventoryTask,Sale,SaleItem,Customer,Payment )
+InventoryTask,Sale,SaleItem,Customer,Payment,Currency )
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -16,7 +16,7 @@ from .serializers import (
     ProductSerializer, 
     StockSerializer, 
     InventoryTaskSerializer,SaleSerializer, SaleItemSerializer,CustomerSerializer,
-    PaymentSerializer
+    PaymentSerializer,CurrencySerializer
     
 )
 
@@ -24,16 +24,13 @@ class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 
-
 class WarehouseViewSet(viewsets.ModelViewSet):
     queryset = Warehouse.objects.all()  
     serializer_class = WarehouseSerializer
 
-
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-
 
 class StockViewSet(viewsets.ModelViewSet):
     queryset = Stock.objects.all()
@@ -46,8 +43,6 @@ class StockViewSet(viewsets.ModelViewSet):
     filterset_fields = ['warehouse', 'product']
     search_fields = ['product__title', 'warehouse__name']
     ordering_fields = ['quantity', 'updated_at']
-
-
 
 class InventoryTaskViewSet(viewsets.ModelViewSet):
     queryset = InventoryTask.objects.all()
@@ -83,11 +78,9 @@ class SaleViewSet(viewsets.ModelViewSet):
     filterset_fields = ['status', 'company']
     search_fields = ['invoice_number']
 
-
 class SaleItemViewSet(viewsets.ModelViewSet):
     queryset = SaleItem.objects.all()
     serializer_class = SaleItemSerializer
-
 
 class SalesReportView(APIView):
     def get(self,request):
@@ -97,7 +90,6 @@ class SalesReportView(APIView):
         )
         return Response(report)
 
-
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset=Customer.objects.all()
     serializer_class=CustomerSerializer
@@ -105,3 +97,8 @@ class CustomerViewSet(viewsets.ModelViewSet):
 class PaymentViewSet(viewsets.ModelViewSet):
     queryset=Payment.objects.all()
     serializer_class=PaymentSerializer
+
+
+class CurrencyViewSet(viewsets.ModelViewSet):
+    queryset=Currency.objects.all()
+    serializer_class=CurrencySerializer
