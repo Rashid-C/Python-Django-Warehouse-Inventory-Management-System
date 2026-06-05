@@ -89,7 +89,7 @@ class Sale(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
     customer = models.ForeignKey('Customer', on_delete=models.SET_NULL, null=True, blank=True)
-
+    currency=models.ForeignKey('Currency', on_delete=models.CASCADE, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -133,3 +133,11 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment of {self.amount} for {self.sale.invoice_number}"
+    
+
+class Currency(models.Model):
+    code=models.CharField(max_length=3, unique=True)
+    name=models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.code
