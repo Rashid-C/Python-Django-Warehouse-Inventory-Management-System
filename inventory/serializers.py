@@ -83,6 +83,7 @@ class InventoryTaskSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at']
         depth = 1
 
+
 class SaleItemNestedSerializer(serializers.ModelSerializer):
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
     warehouse = serializers.PrimaryKeyRelatedField(queryset=Warehouse.objects.all())
@@ -90,6 +91,27 @@ class SaleItemNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = SaleItem
         fields = ['id', 'product', 'warehouse', 'quantity', 'price_at_sale']
+
+    def validate(self, data):
+        product = data.get('product')
+        warehouse = data.get('warehouse')
+        requested_quantity = data.get('quantity')
+
+        #
+        stock = Stock.objects.filter(warehouse=warehouse, product=product).first()
+
+      
+        if not stock:
+            raise serializers.ValidationError(
+                f"No stock record found for this product in this warehouse."
+            )
+
+        if stock.quantity < requested_quantity:
+            raise serializers.ValidationError(
+                f"Insufficient stock! Available: {stock.quantity}, Requested: {requested_quantity}."
+            )
+        
+        return data
 
 
 class SaleSerializer(serializers.ModelSerializer):
@@ -151,7 +173,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 class CurrencySerializer(serializers.ModelSerializer):
     class Meta:
         model=Currency
-        fields=['id','code','name']
+        fields=['id','code','name','symbol']
 
 
 class SupplierSerializer(serializers.ModelSerializer):
