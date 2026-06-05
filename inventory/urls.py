@@ -3,7 +3,8 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (CompanyViewSet, WarehouseViewSet, 
     ProductViewSet, StockViewSet, InventoryTaskViewSet,
-SaleViewSet,SaleItemViewSet,CustomerViewSet ,PaymentViewSet)
+    SaleViewSet, SaleItemViewSet, CustomerViewSet, 
+    PaymentViewSet, SalesReportView)
 
 
 router = DefaultRouter()
@@ -21,5 +22,7 @@ router.register(r'payments',PaymentViewSet)
 
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('reports/sales/', SalesReportView.as_view(), name='sales-report'),
+
 ]

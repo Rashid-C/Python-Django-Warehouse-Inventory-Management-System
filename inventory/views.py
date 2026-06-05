@@ -8,7 +8,8 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
+from django.db.models import Sum, F
+from rest_framework.views import APIView
 from .serializers import (
     CompanySerializer, 
     WarehouseSerializer, 
@@ -86,6 +87,15 @@ class SaleViewSet(viewsets.ModelViewSet):
 class SaleItemViewSet(viewsets.ModelViewSet):
     queryset = SaleItem.objects.all()
     serializer_class = SaleItemSerializer
+
+
+class SalesReportView(APIView):
+    def get(self,request):
+        report = SaleItem.objects.aggregate(
+            total_revenue=Sum(F('quantity') * F('price_at_sale')),
+            total_items_sold=Sum('quantity')
+        )
+        return Response(report)
 
 
 class CustomerViewSet(viewsets.ModelViewSet):

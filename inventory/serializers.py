@@ -136,8 +136,6 @@ class SaleItemSerializer(serializers.ModelSerializer):
         return data
 
 
-      
-
 
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
