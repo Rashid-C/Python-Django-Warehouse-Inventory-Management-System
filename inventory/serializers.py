@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from .models import (Company,
-Warehouse,
-Product,
-Stock,
+from .models import (
+Company,Warehouse,
+Product,Stock,
 InventoryTask,
 Sale,SaleItem,
 Customer,Payment,
-Currency,Supplier
+Currency,Supplier,
+Purchase,PurchaseItem
 )
 
 
@@ -158,3 +158,28 @@ class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supplier
         fields = '__all__'
+
+class PurchaseItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PurchaseItem
+        fields = ['product', 'quantity', 'unit_price']
+
+class PurchaseSerializer(serializers.ModelSerializer):
+    items = PurchaseItemSerializer(many=True)
+
+    class Meta:
+        model = Purchase
+        fields = ['invoice_number', 'total_amount', 'supplier', 'company', 'items']
+
+    def create(self, validated_data):
+       
+        items_data = validated_data.pop('items')
+        
+      
+        purchase = Purchase.objects.create(**validated_data)
+        
+        
+        for item_data in items_data:
+            PurchaseItem.objects.create(purchase=purchase, **item_data)
+            
+        return purchase

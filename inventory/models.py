@@ -152,3 +152,23 @@ class Supplier(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Purchase(models.Model):
+    supplier = models.ForeignKey('Supplier', on_delete=models.CASCADE)
+    purchase_date = models.DateTimeField(auto_now_add=True)
+    invoice_number = models.CharField(max_length=50, unique=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Purchase {self.invoice_number} from {self.supplier.name}"
+    
+
+class PurchaseItem(models.Model):
+    purchase = models.ForeignKey(Purchase, related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.product.name} ({self.quantity})"

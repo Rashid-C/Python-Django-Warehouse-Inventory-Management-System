@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (CompanyViewSet, WarehouseViewSet, 
     ProductViewSet, StockViewSet, InventoryTaskViewSet,
     SaleViewSet, SaleItemViewSet, CustomerViewSet, 
-    PaymentViewSet, SalesReportView,CurrencyViewSet,SupplierViewSet)
+    PaymentViewSet, SalesReportView,CurrencyViewSet,SupplierViewSet,PurchaseViewSet)
 
 
 router = DefaultRouter()
@@ -20,6 +20,7 @@ router.register(r'customers',CustomerViewSet)
 router.register(r'payments',PaymentViewSet)
 router.register(r'currencies',CurrencyViewSet, basename='currency')
 router.register(r'suppliers',SupplierViewSet, basename='supplier')
+router.register(r'purchases', PurchaseViewSet, basename='purchase')
 
 
 
