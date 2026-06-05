@@ -102,6 +102,15 @@ class PaymentViewSet(viewsets.ModelViewSet):
 class CurrencyViewSet(viewsets.ModelViewSet):
     queryset=Currency.objects.all()
     serializer_class=CurrencySerializer
+    
+    def create(self, request, *args, **kwargs):
+        if isinstance(request.data, list):
+            serializer = self.get_serializer(data=request.data, many=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return super().create(request, *args, **kwargs)
 
 
 class SupplierViewSet(viewsets.ModelViewSet):

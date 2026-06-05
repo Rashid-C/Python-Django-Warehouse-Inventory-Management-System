@@ -140,22 +140,27 @@ class SaleItemSerializer(serializers.ModelSerializer):
         model = SaleItem
         fields = ['id', 'sale', 'product', 'warehouse', 'quantity', 'price_at_sale']
 
-    def validate(self,data):
+    def validate(self, data):
         product = data.get('product')
         warehouse = data.get('warehouse')
         requested_qty = data.get('quantity')
 
         try:
-            stock_obj=Stock.objects.get(product=product, warehouse=warehouse)
+            
+            stock_obj = Stock.objects.select_for_update().get(
+                product=product, 
+                warehouse=warehouse
+            )
         except Stock.DoesNotExist:
             raise serializers.ValidationError(
                 "Stock record for this product in this warehouse does not exist."
             )
         
-        if requested_qty >stock_obj.quantity:
+        if requested_qty > stock_obj.quantity:
             raise serializers.ValidationError(
                 f"Insufficient stock! Available: {stock_obj.quantity}, Requested: {requested_qty}"
             )
+            
         return data
 
 
